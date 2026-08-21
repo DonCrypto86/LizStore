@@ -20,7 +20,7 @@ Die Seite ist danach unter `http://localhost:3000` erreichbar. Ohne Supabase-Ver
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 ```
 
 Der geheime `service_role`-Schlüssel wird nicht benötigt und darf nicht im Projekt gespeichert werden.
