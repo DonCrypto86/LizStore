@@ -110,7 +110,7 @@ footer { min-height:130px; display:flex; align-items:center; justify-content:spa
   .count { padding-top:25px; white-space:nowrap; }
   .filters { gap:3px; overflow:visible; margin:22px 0 26px; padding-bottom:0; }
   .filters button { padding:7px 7px; font-size:10.5px; }
-  .filters .price-sort { gap:3px; }
+  .filters .price-sort { gap:3px; margin-left:auto; }
   .filters .price-sort svg { width:12px; height:12px; }
   .filter-divider { display:none; }
   .grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
