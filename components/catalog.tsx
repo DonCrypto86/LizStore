@@ -42,7 +42,7 @@ export function Catalog({ products }: { products: Product[] }) {
           <a className="brand brand-logo-link" href="#inicio" aria-label="Liz Store, inicio">
             <Image className="liz-logo" src="/brand/liz-store-logo.png" alt="Liz Store — Moda para toda la familia" width={398} height={230} priority />
           </a>
-          <a className="nav-contact" href={whatsappUrl()} target="_blank"><MessageCircle size={18} /> Consultar</a>
+          <a className="nav-contact" href={whatsappUrl()} target="_blank" rel="noreferrer" aria-label="Contactar por WhatsApp"><MessageCircle size={19} strokeWidth={2.4} /> WhatsApp</a>
         </nav>
         <div className="hero-content shell" id="inicio">
           <div className="official"><span>Representación oficial de</span><Image className="romance-logo" src="/brand/romance-logo.avif" alt="Romance" width={110} height={44} /></div>
