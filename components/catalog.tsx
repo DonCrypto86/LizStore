@@ -20,9 +20,10 @@ export function Catalog({ products }: { products: Product[] }) {
     if (priceSort === "none") return filtered;
     return [...filtered].sort((a, b) => priceSort === "asc" ? a.price - b.price : b.price - a.price);
   }, [active, priceSort, products]);
+  const groupedView = active === "todos" && priceSort === "none";
 
   function togglePriceSort() {
-    setPriceSort((current) => current === "asc" ? "desc" : "asc");
+    setPriceSort((current) => current === "none" ? "asc" : current === "asc" ? "desc" : "none");
   }
 
   useEffect(() => {
@@ -35,6 +36,26 @@ export function Catalog({ products }: { products: Product[] }) {
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [selectedProduct]);
+
+  function renderProducts(items: Product[]) {
+    return <div className="grid">
+      {items.map((product) => (
+        <article className="card" key={product.id}>
+          <button className="image-wrap product-image-button" type="button" onClick={() => setSelectedProduct(product)} aria-label={`Ampliar foto de ${product.name}`}>
+            <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 640px) 50vw, 33vw" />
+            <div className="badges">{product.is_new && <span>Nuevo</span>}{product.is_offer && <span>Oferta</span>}</div>
+          </button>
+          <div className="card-body">
+            <div className="meta">{product.brand} · Ref. {product.reference}</div>
+            <h3>{product.name}</h3>
+            <p className="details">{[product.color, product.sizes].filter(Boolean).join(" · ")}</p>
+            <div className="price">{formatGuarani(product.price)}</div>
+            <a className="whatsapp" href={whatsappUrl(product.name, product.reference, product.price)} target="_blank" rel="noreferrer" aria-label={`Consultar ${product.name} por WhatsApp`}><MessageCircle size={17}/> Consultar</a>
+          </div>
+        </article>
+      ))}
+    </div>;
+  }
 
   return (
     <>
@@ -64,25 +85,18 @@ export function Catalog({ products }: { products: Product[] }) {
         <div className="filters" role="group" aria-label="Filtrar productos">
           {filters.map(([value, label]) => <button key={value} className={active === value ? "active" : ""} onClick={() => setActive(value)}>{label}</button>)}
           <span className="filter-divider" aria-hidden="true" />
-          <button className={`price-sort ${priceSort !== "none" ? "active" : ""}`} onClick={togglePriceSort} aria-label={priceSort === "asc" ? "Ordenar por precio de mayor a menor" : "Ordenar por precio de menor a mayor"}>Precio {priceSort === "asc" ? <ArrowUp size={14}/> : priceSort === "desc" ? <ArrowDown size={14}/> : <ArrowUpDown size={14}/>}</button>
+          <button className={`price-sort ${priceSort !== "none" ? "active" : ""}`} onClick={togglePriceSort} aria-label={priceSort === "none" ? "Ordenar por precio de menor a mayor" : priceSort === "asc" ? "Ordenar por precio de mayor a menor" : "Quitar orden por precio"}>Precio {priceSort === "asc" ? <ArrowUp size={14}/> : priceSort === "desc" ? <ArrowDown size={14}/> : <ArrowUpDown size={14}/>}</button>
         </div>
-        <div className="grid">
-          {shown.map((product) => (
-            <article className="card" key={product.id}>
-              <button className="image-wrap product-image-button" type="button" onClick={() => setSelectedProduct(product)} aria-label={`Ampliar foto de ${product.name}`}>
-                <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 640px) 50vw, 33vw" />
-                <div className="badges">{product.is_new && <span>Nuevo</span>}{product.is_offer && <span>Oferta</span>}</div>
-              </button>
-              <div className="card-body">
-                <div className="meta">{product.brand} · Ref. {product.reference}</div>
-                <h3>{product.name}</h3>
-                <p className="details">{[product.color, product.sizes].filter(Boolean).join(" · ")}</p>
-                <div className="price">{formatGuarani(product.price)}</div>
-                <a className="whatsapp" href={whatsappUrl(product.name, product.reference, product.price)} target="_blank" rel="noreferrer" aria-label={`Consultar ${product.name} por WhatsApp`}><MessageCircle size={17}/> Consultar</a>
-              </div>
-            </article>
-          ))}
-        </div>
+        {groupedView ? <div className="category-groups">
+          {filters.slice(1).map(([value, label]) => {
+            const items = shown.filter((product) => product.category === value);
+            if (!items.length) return null;
+            return <section className="category-section" key={value} aria-labelledby={`category-${value}`}>
+              <div className="category-title"><h3 id={`category-${value}`}>{label}</h3><span>{items.length} {items.length === 1 ? "producto" : "productos"}</span></div>
+              {renderProducts(items)}
+            </section>;
+          })}
+        </div> : renderProducts(shown)}
       </main>
       <section className="cta"><div className="shell"><span>¿Necesitás ayuda para elegir?</span><h2>Escribile a Liz</h2><p>Atención personalizada y rápida por WhatsApp.</p><a href={whatsappUrl()} target="_blank"><MessageCircle size={19}/> 0993 376 335</a></div></section>
       <footer className="shell"><div className="footer-brand"><Image className="liz-logo footer-logo" src="/brand/liz-store-logo.png" alt="Liz Store" width={318} height={184} /></div><div className="footer-romance"><span>Representación oficial de</span><Image src="/brand/romance-logo.avif" alt="Romance" width={88} height={35} /></div></footer>
