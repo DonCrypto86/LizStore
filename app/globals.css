@@ -30,8 +30,8 @@ a { color:inherit; text-decoration:none; }
 .brand-logo-link { width:220px;height:92px;overflow:visible;display:flex;align-items:center; }
 .liz-logo { width:100%;height:auto;display:block; }
 .brand-logo-link .liz-logo { width:205px;transform:translateY(4px); }
-.nav-contact { display:flex; align-items:center; gap:8px; border:1px solid #14994d; color:white; background:#25d366; padding:11px 16px; border-radius:99px; font-weight:800; font-size:13px; box-shadow:0 7px 20px #179c4930; }
-.nav-whatsapp-icon { width:19px;height:19px;display:block;flex:none;border-radius:5px;object-fit:cover; }
+.nav-contact { display:flex;align-items:center;padding:0;border:0;background:transparent; }
+.nav-whatsapp-icon { width:42px;height:42px;display:block;flex:none;border-radius:10px;object-fit:cover; }
 .hero-content { position:relative; z-index:2; padding-top:52px; }
 .official { display:inline-flex; align-items:center; gap:11px; min-height:42px; padding:3px 8px 3px 14px; border:1px solid #725b781f; border-radius:99px; background:#ffffffd9; font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:#6e6670; }
 .romance-logo { width:88px;height:34px;object-fit:contain;filter:brightness(0);opacity:1; }
@@ -106,7 +106,7 @@ footer { min-height:130px; display:flex; align-items:center; justify-content:spa
   .brand-mark { width:39px;height:39px;font-size:23px; }
   .brand-logo-link { width:168px;height:72px; }
   .brand-logo-link .liz-logo { width:158px;transform:translateY(4px); }
-  .nav-contact { font-size:0; padding:10px; }
+  .nav-contact { padding:0; }
   .hero-content { padding-top:44px; }
   .hero-content>p { font-size:14px; max-width:350px; line-height:1.55; }
   .hero-content>p .hero-whatsapp { margin-top:3px; white-space:normal; }
