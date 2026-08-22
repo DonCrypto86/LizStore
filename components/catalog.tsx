@@ -11,10 +11,18 @@ const filters = [
   ["todos", "Todos"], ["mujeres", "Mujeres"], ["hombres", "Hombres"], ["ninos", "Niños"]
 ] as const;
 
+const heroTitles = [
+  { lead: "Tu estilo, ", accent: "más cerca." },
+  { lead: "Detalles que ", accent: "te hacen única." },
+  { lead: "Diseños que ", accent: "enamoran." },
+  { lead: "Siéntete ", accent: "tú", tail: " todos los días." }
+] as const;
+
 export function Catalog({ products }: { products: Product[] }) {
   const [active, setActive] = useState("todos");
   const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [titleIndex, setTitleIndex] = useState(0);
   const shown = useMemo(() => {
     const filtered = products.filter((p) => active === "todos" || p.category === active);
     if (priceSort === "none") return filtered;
@@ -36,6 +44,12 @@ export function Catalog({ products }: { products: Product[] }) {
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [selectedProduct]);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => setTitleIndex((current) => (current + 1) % heroTitles.length), 5600);
+    return () => window.clearInterval(timer);
+  }, []);
 
   function renderProducts(items: Product[]) {
     return <div className="grid">
@@ -68,7 +82,7 @@ export function Catalog({ products }: { products: Product[] }) {
         </nav>
         <div className="hero-content shell" id="inicio">
           <div className="official"><span>Representación oficial de</span><Image className="romance-logo" src="/brand/romance-logo.avif" alt="Romance" width={110} height={44} /></div>
-          <h1>Tu estilo, <em>más cerca.</em></h1>
+          <h1 className="hero-title"><span className="hero-title-slide" key={titleIndex}>{heroTitles[titleIndex].lead}<em>{heroTitles[titleIndex].accent}</em>{"tail" in heroTitles[titleIndex] ? heroTitles[titleIndex].tail : ""}</span></h1>
           <p>Desde 2005, Romance combina calidad, diseño e innovación. Colecciones de moda íntima, fitness y casual, más cerca de vos con atención personal y asesoramiento directo.</p>
           <a className="primary" href="#productos">Ver colección <ArrowRight size={18} /></a>
           <div className="hero-note"><span>Atención personal</span><span>•</span><span>Envíos en Paraguay</span></div>
