@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
-import { Eye, EyeOff, LogOut, Pencil, Plus, Trash2, Upload, X } from "lucide-react";
+import { CheckCircle2, Eye, EyeOff, LogOut, Pencil, Plus, RefreshCw, Trash2, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { formatGuarani } from "@/lib/format";
@@ -15,7 +15,20 @@ export function AdminDashboard({ initialProducts, email }: { initialProducts: Pr
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [metaStatus, setMetaStatus] = useState<{ state: "idle" | "checking" | "connected" | "error"; name?: string; message?: string }>({ state: "idle" });
   const bulkFileRef = useRef<HTMLInputElement>(null);
+
+  async function checkMetaCatalog() {
+    setMetaStatus({ state: "checking" });
+    try {
+      const response = await fetch("/api/meta/catalog/status", { cache: "no-store" });
+      const result = await response.json() as { connected?: boolean; catalog?: { name?: string }; message?: string };
+      if (!response.ok || !result.connected) throw new Error(result.message || "No se pudo verificar el catálogo.");
+      setMetaStatus({ state: "connected", name: result.catalog?.name || "WhatsApp Product Catalog" });
+    } catch (error) {
+      setMetaStatus({ state: "error", message: error instanceof Error ? error.message : "No se pudo verificar el catálogo." });
+    }
+  }
 
   async function toggle(product: Product) {
     const status = product.status === "published" ? "hidden" : "published";
@@ -86,6 +99,13 @@ export function AdminDashboard({ initialProducts, email }: { initialProducts: Pr
   return <main className="admin-shell">
     <header className="admin-header"><div className="brand admin-brand"><span className="brand-mark">L</span><span><strong>Liz Store</strong><small>Administración</small></span></div><button className="ghost" onClick={signOut}><LogOut size={17}/> Salir</button></header>
     <div className="admin-title"><div><span className="eyebrow">{email}</span><h1>Mis productos</h1><p>{products.length} productos en total</p></div><div className="admin-title-actions"><input ref={bulkFileRef} className="bulk-upload-input" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={uploadPhotos}/><button className="import" onClick={() => bulkFileRef.current?.click()} disabled={uploading}><Upload size={19}/> {uploading ? `Subiendo ${uploadProgress}…` : "Subir varias fotos"}</button><button className="add" onClick={() => setEditing(null)}><Plus size={19}/> Agregar producto</button></div></div>
+    <section className={`meta-connection ${metaStatus.state}`} aria-live="polite">
+      <div className="meta-connection-copy">
+        {metaStatus.state === "connected" ? <CheckCircle2 aria-hidden="true"/> : <RefreshCw aria-hidden="true"/>}
+        <div><strong>Catálogo de WhatsApp</strong><span>{metaStatus.state === "connected" ? `${metaStatus.name} conectado` : metaStatus.state === "error" ? metaStatus.message : metaStatus.state === "checking" ? "Verificando conexión…" : "Comprobá la conexión segura con Meta"}</span></div>
+      </div>
+      <button type="button" onClick={checkMetaCatalog} disabled={metaStatus.state === "checking"}>{metaStatus.state === "checking" ? "Verificando…" : "Probar conexión"}</button>
+    </section>
     <div className="product-list">{products.map((p) => <article className="admin-product" key={p.id}><div className="thumb"><Image src={p.image_url} fill alt="" sizes="72px" /></div><div className="admin-product-info"><span className={`status ${p.status}`}>{p.status === "published" ? "Publicado" : "Oculto"}</span><h2>{p.name}</h2><p>{formatGuarani(p.price)} · {p.category}</p></div><div className="admin-actions"><button onClick={() => setEditing(p)} aria-label="Editar"><Pencil size={17}/></button><button onClick={() => toggle(p)} aria-label={p.status === "published" ? "Ocultar" : "Publicar"}>{p.status === "published" ? <EyeOff size={17}/> : <Eye size={17}/>}</button><button className="danger" onClick={() => remove(p)} aria-label="Eliminar"><Trash2 size={17}/></button></div></article>)}</div>
     {editing !== undefined && <ProductModal product={editing} busy={busy} setBusy={setBusy} close={() => setEditing(undefined)} saved={(product) => { setProducts(editing ? products.map(p => p.id === product.id ? product : p) : [product, ...products]); setEditing(undefined); }} />}
   </main>;
