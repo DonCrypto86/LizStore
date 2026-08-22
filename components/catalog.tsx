@@ -48,8 +48,8 @@ export function Catalog({ products }: { products: Product[] }) {
           <div className="official"><span>Representación oficial de</span><Image className="romance-logo" src="/brand/romance-logo.avif" alt="Romance" width={110} height={44} /></div>
           <h1>Tu estilo, <em>más cerca.</em></h1>
           <p>
-            <span>Elegí lo que te representa. Nosotros te lo acercamos.</span>
-            <span className="hero-whatsapp">Mirá, elegí y consultá <br className="mobile-break" />directamente con Liz por WhatsApp.</span>
+            <span className="hero-brand-copy">Desde 2005, Romance combina <br className="mobile-break" />calidad, diseño e innovación.</span>
+            <span className="hero-whatsapp">Colecciones de moda íntima, fitness y casual, <br className="mobile-break" />más cerca de vos con atención personal y asesoramiento directo.</span>
           </p>
           <a className="primary" href="#productos">Ver colección <ArrowRight size={18} /></a>
           <div className="hero-note"><span>Atención personal</span><span>•</span><span>Envíos en Paraguay</span></div>
