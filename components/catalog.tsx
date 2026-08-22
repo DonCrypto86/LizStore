@@ -25,7 +25,7 @@ export function Catalog({ products }: { products: Product[] }) {
         </nav>
         <div className="hero-content shell" id="inicio">
           <div className="official"><span>Representación oficial de</span><Image className="romance-logo" src="/brand/romance-logo.avif" alt="Romance" width={110} height={44} /></div>
-          <h1>Tu estilo,<br/><em>más cerca.</em></h1>
+          <h1>Tu estilo, <em>más cerca.</em></h1>
           <p>Prendas elegidas para toda la familia. Mirá, elegí y consultá directamente con Liz por WhatsApp.</p>
           <a className="primary" href="#productos">Ver colección <ArrowRight size={18} /></a>
           <div className="hero-note"><span>Atención personal</span><span>•</span><span>Envíos en Paraguay</span></div>
