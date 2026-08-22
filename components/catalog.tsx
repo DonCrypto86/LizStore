@@ -36,7 +36,7 @@ export function Catalog({ products }: { products: Product[] }) {
           <div className="official"><span>Representación oficial de</span><Image className="romance-logo" src="/brand/romance-logo.avif" alt="Romance" width={110} height={44} /></div>
           <h1>Tu estilo, <em>más cerca.</em></h1>
           <p>
-            <span>Prendas elegidas para toda la familia.</span>
+            <span>Elegí lo que te representa. Nosotros te lo acercamos.</span>
             <span className="hero-whatsapp">Mirá, elegí y consultá <br className="mobile-break" />directamente con Liz por WhatsApp.</span>
           </p>
           <a className="primary" href="#productos">Ver colección <ArrowRight size={18} /></a>
