@@ -60,10 +60,28 @@ export function Catalog({ products }: { products: Product[] }) {
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: product.name, text, url });
+        const response = await fetch(product.image_url);
+        if (!response.ok) throw new Error("No se pudo descargar la imagen");
+        const blob = await response.blob();
+        const extension = blob.type.split("/")[1]?.replace("jpeg", "jpg") || "jpg";
+        const safeName = product.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "producto";
+        const image = new File([blob], `${safeName}.${extension}`, { type: blob.type || "image/jpeg" });
+        const shareData = { title: product.name, text: `${text}\n${url}`, files: [image] };
+
+        if (!navigator.canShare || navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+        } else {
+          await navigator.share({ title: product.name, text, url });
+        }
         return;
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") return;
+        try {
+          await navigator.share({ title: product.name, text, url });
+          return;
+        } catch (fallbackError) {
+          if (fallbackError instanceof DOMException && fallbackError.name === "AbortError") return;
+        }
       }
     }
 
