@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, MessageCircle, Share2, X } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatGuarani, whatsappUrl } from "@/lib/format";
+import { createClient } from "@/lib/supabase/client";
 import { WaveAnimation } from "@/components/wave-animation";
 
 const filters = [
@@ -94,6 +95,21 @@ export function Catalog({ products }: { products: Product[] }) {
     const linkedProduct = products.find((product) => product.id === productId);
     if (linkedProduct) setSelectedProduct(linkedProduct);
   }, [products]);
+
+  useEffect(() => {
+    const lastVisit = Number(localStorage.getItem("liz-store-last-visit") || 0);
+    if (Date.now() - lastVisit < 30 * 60 * 1000) return;
+
+    let visitorId = localStorage.getItem("liz-store-visitor-id");
+    if (!visitorId) {
+      visitorId = crypto.randomUUID();
+      localStorage.setItem("liz-store-visitor-id", visitorId);
+    }
+
+    createClient().from("page_visits").insert({ visitor_id: visitorId }).then(({ error }) => {
+      if (!error) localStorage.setItem("liz-store-last-visit", String(Date.now()));
+    });
+  }, []);
 
   useEffect(() => {
     if (!selectedProduct) return;

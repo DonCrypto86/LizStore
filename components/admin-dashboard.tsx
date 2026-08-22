@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
-import { CheckCircle2, Eye, EyeOff, LogOut, Pencil, Plus, RefreshCw, Trash2, Upload, X } from "lucide-react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { CheckCircle2, Eye, EyeOff, LogOut, Pencil, Plus, RefreshCw, Trash2, Upload, Users, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { formatGuarani } from "@/lib/format";
@@ -99,6 +99,7 @@ export function AdminDashboard({ initialProducts, email }: { initialProducts: Pr
   return <main className="admin-shell">
     <header className="admin-header"><div className="brand admin-brand"><span className="brand-mark">L</span><span><strong>Liz Store</strong><small>Administración</small></span></div><button className="ghost" onClick={signOut}><LogOut size={17}/> Salir</button></header>
     <div className="admin-title"><div><span className="eyebrow">{email}</span><h1>Mis productos</h1><p>{products.length} productos en total</p></div><div className="admin-title-actions"><input ref={bulkFileRef} className="bulk-upload-input" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={uploadPhotos}/><button className="import" onClick={() => bulkFileRef.current?.click()} disabled={uploading}><Upload size={19}/> {uploading ? `Subiendo ${uploadProgress}…` : "Subir varias fotos"}</button><button className="add" onClick={() => setEditing(null)}><Plus size={19}/> Agregar producto</button></div></div>
+    <VisitorAnalytics />
     <section className={`meta-connection ${metaStatus.state}`} aria-live="polite">
       <div className="meta-connection-copy">
         {metaStatus.state === "connected" ? <CheckCircle2 aria-hidden="true"/> : <RefreshCw aria-hidden="true"/>}
@@ -109,6 +110,33 @@ export function AdminDashboard({ initialProducts, email }: { initialProducts: Pr
     <div className="product-list">{products.map((p) => <article className="admin-product" key={p.id}><div className="thumb"><Image src={p.image_url} fill alt="" sizes="72px" /></div><div className="admin-product-info"><span className={`status ${p.status}`}>{p.status === "published" ? "Publicado" : "Oculto"}</span><h2>{p.name}</h2><p>{formatGuarani(p.price)} · {p.category}</p></div><div className="admin-actions"><button onClick={() => setEditing(p)} aria-label="Editar"><Pencil size={17}/></button><button onClick={() => toggle(p)} aria-label={p.status === "published" ? "Ocultar" : "Publicar"}>{p.status === "published" ? <EyeOff size={17}/> : <Eye size={17}/>}</button><button className="danger" onClick={() => remove(p)} aria-label="Eliminar"><Trash2 size={17}/></button></div></article>)}</div>
     {editing !== undefined && <ProductModal product={editing} busy={busy} setBusy={setBusy} close={() => setEditing(undefined)} saved={(product) => { setProducts(editing ? products.map(p => p.id === product.id ? product : p) : [product, ...products]); setEditing(undefined); }} />}
   </main>;
+}
+
+type AnalyticsPeriod = "24h" | "7d" | "30d";
+
+function VisitorAnalytics() {
+  const [period, setPeriod] = useState<AnalyticsPeriod>("7d");
+  const [visits, setVisits] = useState<Array<{ visitor_id: string; visited_at: string }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    createClient().from("page_visits").select("visitor_id, visited_at").gte("visited_at", since).then(({ data }) => {
+      setVisits((data ?? []) as Array<{ visitor_id: string; visited_at: string }>);
+      setLoading(false);
+    });
+  }, []);
+
+  const periodHours = period === "24h" ? 24 : period === "7d" ? 7 * 24 : 30 * 24;
+  const threshold = Date.now() - periodHours * 60 * 60 * 1000;
+  const visitorCount = new Set(visits.filter((visit) => new Date(visit.visited_at).getTime() >= threshold).map((visit) => visit.visitor_id)).size;
+
+  return <section className="visitor-analytics" aria-label="Visitantes del sitio">
+    <div className="visitor-total"><Users aria-hidden="true"/><div><span>Visitantes</span><strong>{loading ? "—" : visitorCount}</strong></div></div>
+    <div className="analytics-periods" role="group" aria-label="Período de visitantes">
+      {([['24h', '24 horas'], ['7d', '7 días'], ['30d', '30 días']] as const).map(([value, label]) => <button type="button" key={value} className={period === value ? "active" : ""} onClick={() => setPeriod(value)}>{label}</button>)}
+    </div>
+  </section>;
 }
 
 function ProductModal({ product, close, saved, busy, setBusy }: { product: Product | null; close: () => void; saved: (p: Product) => void; busy: boolean; setBusy: (b: boolean) => void }) {
