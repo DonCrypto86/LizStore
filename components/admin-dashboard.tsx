@@ -2,17 +2,19 @@
 
 import Image from "next/image";
 import { FormEvent, useRef, useState } from "react";
-import { Eye, EyeOff, LogOut, Pencil, Plus, Trash2, Upload, X } from "lucide-react";
+import { Download, Eye, EyeOff, LogOut, Pencil, Plus, Trash2, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { formatGuarani } from "@/lib/format";
 import type { Product } from "@/lib/types";
+import { productImports } from "@/lib/product-import";
 
 export function AdminDashboard({ initialProducts, email }: { initialProducts: Product[]; email: string }) {
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
   const [editing, setEditing] = useState<Product | null | undefined>();
   const [busy, setBusy] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   async function toggle(product: Product) {
     const status = product.status === "published" ? "hidden" : "published";
@@ -26,10 +28,23 @@ export function AdminDashboard({ initialProducts, email }: { initialProducts: Pr
     if (!error) setProducts(products.filter((p) => p.id !== product.id));
   }
   async function signOut() { await createClient().auth.signOut(); router.push("/admin/login"); router.refresh(); }
+  async function importPhotos() {
+    if (!confirm("¿Importar los 24 productos como ocultos para editarlos después?")) return;
+    setImporting(true);
+    const supabase = createClient();
+    const { data: existing } = await supabase.from("products").select("reference").in("reference", productImports.map((p) => p.reference));
+    const references = new Set((existing ?? []).map((p) => p.reference));
+    const pending = productImports.filter((p) => !references.has(p.reference));
+    if (!pending.length) { alert("Las 24 fotos ya fueron importadas."); setImporting(false); return; }
+    const { data, error } = await supabase.from("products").insert(pending).select();
+    if (error) alert(`No se pudieron importar: ${error.message}`);
+    else setProducts([...(data as Product[]), ...products]);
+    setImporting(false);
+  }
 
   return <main className="admin-shell">
     <header className="admin-header"><div className="brand admin-brand"><span className="brand-mark">L</span><span><strong>Liz Store</strong><small>Administración</small></span></div><button className="ghost" onClick={signOut}><LogOut size={17}/> Salir</button></header>
-    <div className="admin-title"><div><span className="eyebrow">{email}</span><h1>Mis productos</h1><p>{products.length} productos en total</p></div><button className="add" onClick={() => setEditing(null)}><Plus size={19}/> Agregar producto</button></div>
+    <div className="admin-title"><div><span className="eyebrow">{email}</span><h1>Mis productos</h1><p>{products.length} productos en total</p></div><div className="admin-title-actions"><button className="import" onClick={importPhotos} disabled={importing}><Download size={19}/> {importing ? "Importando…" : "Importar 24 fotos"}</button><button className="add" onClick={() => setEditing(null)}><Plus size={19}/> Agregar producto</button></div></div>
     <div className="product-list">{products.map((p) => <article className="admin-product" key={p.id}><div className="thumb"><Image src={p.image_url} fill alt="" sizes="72px" /></div><div className="admin-product-info"><span className={`status ${p.status}`}>{p.status === "published" ? "Publicado" : "Oculto"}</span><h2>{p.name}</h2><p>{formatGuarani(p.price)} · {p.category}</p></div><div className="admin-actions"><button onClick={() => setEditing(p)} aria-label="Editar"><Pencil size={17}/></button><button onClick={() => toggle(p)} aria-label={p.status === "published" ? "Ocultar" : "Publicar"}>{p.status === "published" ? <EyeOff size={17}/> : <Eye size={17}/>}</button><button className="danger" onClick={() => remove(p)} aria-label="Eliminar"><Trash2 size={17}/></button></div></article>)}</div>
     {editing !== undefined && <ProductModal product={editing} busy={busy} setBusy={setBusy} close={() => setEditing(undefined)} saved={(product) => { setProducts(editing ? products.map(p => p.id === product.id ? product : p) : [product, ...products]); setEditing(undefined); }} />}
   </main>;

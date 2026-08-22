@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family:"Bodoni FLF";
+  src:url("/fonts/BodoniFLF-Roman.ttf") format("truetype");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
+@font-face {
+  font-family:"Bodoni FLF";
+  src:url("/fonts/BodoniFLF-Italic.ttf") format("truetype");
+  font-style:italic;
+  font-weight:400;
+  font-display:swap;
+}
+
 :root { --ink:#29252b; --purple:#62406e; --deep:#432a49; --lilac:#b69fbe; --mist:#faf8f7; --green:#1fa463; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
@@ -60,7 +75,7 @@ footer { min-height:130px; display:flex; align-items:center; justify-content:spa
 .ghost,.add,.admin-actions button,.modal-head button { border:0; cursor:pointer; display:flex; align-items:center; gap:8px; }
 .ghost { background:transparent; color:#796f7e; }.admin-title { display:flex; justify-content:space-between; align-items:end; margin:55px 0 30px; }
 .admin-title h1,.setup h1,.login-card h1 { color:var(--deep); margin:8px 0; font:400 46px/1 Georgia,serif; }.admin-title p { margin:0;color:#877e8b; }
-.add,.save { border:0; background:var(--purple);color:white;padding:14px 18px;border-radius:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:7px; }
+.admin-title-actions { display:flex;gap:9px; }.add,.save,.import { border:0; background:var(--purple);color:white;padding:14px 18px;border-radius:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:7px; }.import { background:#f2edf3;color:#59475f; }.import:disabled { opacity:.65;cursor:wait; }
 .product-list { display:grid;gap:10px; }.admin-product { display:flex;align-items:center;gap:16px;padding:12px;border:1px solid #e9e3ec;border-radius:16px;background:#fff; }
 .thumb { width:72px;height:82px;position:relative;border-radius:10px;overflow:hidden;background:var(--mist);flex:none; }.thumb img { object-fit:cover; }
 .admin-product-info { min-width:0;flex:1; }.admin-product-info h2 { font:400 21px/1.1 Georgia,serif;margin:5px 0; }.admin-product-info p { margin:0;color:#79707e;font-size:12px;text-transform:capitalize; }
@@ -92,5 +107,5 @@ footer { min-height:130px; display:flex; align-items:center; justify-content:spa
   .price { font-size:15px; margin:12px 0; }
   .whatsapp { font-size:11px; padding:10px 5px; }
   footer { flex-direction:column; justify-content:center; text-align:center;padding:24px 0; }.footer-romance { flex-direction:column;gap:2px; }
-  .admin-title { align-items:start;flex-direction:column;gap:20px;margin-top:35px; }.add { width:100%;justify-content:center; }.admin-product { gap:10px; }.thumb { width:58px;height:68px; }.admin-actions { gap:3px; }.admin-actions button { width:34px;height:34px; }.form-grid { grid-template-columns:1fr; }.wide { grid-column:auto; }.modal { padding:20px; }.login-card { padding:28px 22px; }
+  .admin-title { align-items:start;flex-direction:column;gap:20px;margin-top:35px; }.admin-title-actions { width:100%;flex-direction:column; }.add,.import { width:100%;justify-content:center; }.admin-product { gap:10px; }.thumb { width:58px;height:68px; }.admin-actions { gap:3px; }.admin-actions button { width:34px;height:34px; }.form-grid { grid-template-columns:1fr; }.wide { grid-column:auto; }.modal { padding:20px; }.login-card { padding:28px 22px; }
 }
