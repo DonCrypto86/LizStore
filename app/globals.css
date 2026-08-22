@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Inter:wght@400&display=swap");
 @import "tailwindcss";
 
 @font-face {
@@ -36,8 +37,8 @@ a { color:inherit; text-decoration:none; }
 .official { display:inline-flex; align-items:center; gap:11px; min-height:42px; padding:3px 8px 3px 14px; border:1px solid #725b781f; border-radius:99px; background:#ffffffd9; font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:#6e6670; }
 .romance-logo { width:88px;height:34px;object-fit:contain;filter:brightness(0);opacity:1; }
 h1 { font-family:"Bodoni FLF","Bodoni 72","Bodoni MT",Didot,Georgia,serif; font-size:clamp(38px,6.2vw,68px); font-weight:400; line-height:.96; letter-spacing:-.03em; white-space:nowrap; margin:20px 0 24px; }
-h1 em { color:#76517e; font-weight:400; }
-.hero-content>p { max-width:none; font-size:clamp(11px,1.45vw,17px); line-height:1.7; color:#665b6b; margin:0 0 28px; }.hero-content>p span { display:block;white-space:nowrap; }.mobile-break { display:none; }
+h1 em { color:#76517e;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-style:italic; }
+.hero-content>p { max-width:930px;margin:0 0 28px;color:#665b6b;font-family:"Inter",Arial,sans-serif;font-size:clamp(11px,1.45vw,17px);font-weight:400;line-height:1.7; }
 .primary { display:inline-flex; align-items:center; gap:16px; padding:15px 22px; border-radius:99px; background:var(--purple); color:white; font-weight:800; font-size:14px; box-shadow:0 10px 25px #54217525; }
 .hero-note { display:flex; gap:12px; margin-top:28px; color:#7c6d82; font-size:12px; }
 .orb { position:absolute; border-radius:50%; border:1px solid #71587924; }
@@ -108,10 +109,8 @@ footer { min-height:130px; display:flex; align-items:center; justify-content:spa
   .brand-logo-link .liz-logo { width:158px;transform:translateY(4px); }
   .nav-contact { padding:0; }
   .hero-content { padding-top:44px; }
-  .hero-content>p { font-size:14px; max-width:350px; line-height:1.55; }
-  .hero-content>p .hero-whatsapp { margin-top:3px; white-space:normal; }
-  .mobile-break { display:block; }
-  h1 { font-size:clamp(34px,10.4vw,44px); }
+  h1 { margin-bottom:17px;font-size:clamp(34px,10.4vw,44px);line-height:.94; }
+  .hero-content>p { width:100%;max-width:none;margin-bottom:22px;font-size:clamp(13.5px,3.75vw,15px);line-height:1.48;letter-spacing:-.012em; }
   .catalog { padding-top:50px; padding-bottom:60px; }
   .catalog-heading { align-items:start; }
   .catalog-heading h2 { font-size:clamp(29px,8.5vw,38px); }
