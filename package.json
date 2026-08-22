@@ -11,6 +11,7 @@
   "dependencies": {
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@vercel/analytics": "https://registry.npmjs.org/@vercel/analytics/-/analytics-2.0.1.tgz",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
