@@ -47,7 +47,7 @@ export function Catalog({ products }: { products: Product[] }) {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setTitleIndex((current) => (current + 1) % heroTitles.length), 5600);
+    const timer = window.setInterval(() => setTitleIndex((current) => (current + 1) % heroTitles.length), 4000);
     return () => window.clearInterval(timer);
   }, []);
 
