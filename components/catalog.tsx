@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, MessageCircle, X } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatGuarani, whatsappUrl } from "@/lib/format";
+import { WaveAnimation } from "@/components/wave-animation";
 
 const filters = [
   ["todos", "Todos"], ["mujeres", "Mujeres"], ["hombres", "Hombres"], ["ninos", "Niños"]
@@ -51,6 +52,7 @@ export function Catalog({ products }: { products: Product[] }) {
           <a className="primary" href="#productos">Ver colección <ArrowRight size={18} /></a>
           <div className="hero-note"><span>Atención personal</span><span>•</span><span>Envíos en Paraguay</span></div>
         </div>
+        <WaveAnimation />
         <div className="orb orb-one"/><div className="orb orb-two"/>
       </section>
 
