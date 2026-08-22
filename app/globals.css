@@ -103,6 +103,9 @@ footer { position:relative;z-index:2;min-height:130px;display:flex;align-items:c
 .lightbox-image img { object-fit:contain; }
 .lightbox-close { position:absolute;z-index:2;right:12px;top:12px;width:42px;height:42px;display:grid;place-items:center;border:0;border-radius:50%;background:#fffffff0;color:#3f3144;cursor:pointer;box-shadow:0 4px 18px #0002; }
 .lightbox-caption { display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 18px;color:#443848; }.lightbox-caption strong { font:400 21px/1.1 Georgia,serif; }.lightbox-caption span { font-size:14px;font-weight:800;white-space:nowrap; }
+.lightbox-actions { padding:0 18px 17px; }
+.lightbox-share { width:100%;min-height:46px;display:flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:14px;background:#e9f8ef;color:#087b47;font:700 14px/1 Inter,Arial,sans-serif;cursor:pointer; }
+.lightbox-share:active { transform:translateY(1px); }
 .admin-shell { width:min(920px,calc(100% - 28px)); margin:auto; min-height:100vh; padding-bottom:80px; }
 .admin-header { height:90px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #e9e2ec; }
 .admin-brand { color:var(--purple); }.admin-brand .brand-mark { border-color:#7b499d66; }
@@ -167,6 +170,7 @@ footer { position:relative;z-index:2;min-height:130px;display:flex;align-items:c
   .lightbox-panel { border-radius:15px; }
   .lightbox-image { height:72vh; }
   .lightbox-caption { padding:13px 14px; }.lightbox-caption strong { font-size:18px; }
+  .lightbox-actions { padding:0 14px 14px; }
   footer { flex-direction:column; justify-content:center; text-align:center;padding:24px 0; }.footer-romance { flex-direction:column;gap:2px; }
   .admin-title { align-items:start;flex-direction:column;gap:20px;margin-top:35px; }.admin-title-actions { width:100%;flex-direction:column; }.add,.import { width:100%;justify-content:center; }.meta-connection { align-items:stretch;flex-direction:column;margin-top:0; }.meta-connection button { width:100%; }.admin-product { gap:10px; }.thumb { width:58px;height:68px; }.admin-actions { gap:3px; }.admin-actions button { width:34px;height:34px; }.form-grid { grid-template-columns:1fr; }.wide { grid-column:auto; }.modal { padding:20px; }.login-card { padding:28px 22px; }
 }

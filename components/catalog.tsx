@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, MessageCircle, X } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, MessageCircle, Share2, X } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatGuarani, whatsappUrl } from "@/lib/format";
 import { WaveAnimation } from "@/components/wave-animation";
@@ -34,9 +34,52 @@ export function Catalog({ products }: { products: Product[] }) {
     setPriceSort((current) => current === "none" ? "asc" : current === "asc" ? "desc" : "none");
   }
 
+  function productUrl(product: Product) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("producto", product.id);
+    url.hash = "productos";
+    return url.toString();
+  }
+
+  function openProduct(product: Product) {
+    setSelectedProduct(product);
+    window.history.replaceState(null, "", productUrl(product));
+  }
+
+  function closeProduct() {
+    setSelectedProduct(null);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("producto");
+    url.hash = "productos";
+    window.history.replaceState(null, "", url);
+  }
+
+  async function shareProduct(product: Product) {
+    const url = productUrl(product);
+    const text = `${product.name} — ${formatGuarani(product.price)}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: product.name, text, url });
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+      }
+    }
+
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`, "_blank", "noopener,noreferrer");
+  }
+
+  useEffect(() => {
+    const productId = new URLSearchParams(window.location.search).get("producto");
+    if (!productId) return;
+    const linkedProduct = products.find((product) => product.id === productId);
+    if (linkedProduct) setSelectedProduct(linkedProduct);
+  }, [products]);
+
   useEffect(() => {
     if (!selectedProduct) return;
-    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && setSelectedProduct(null);
+    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && closeProduct();
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", closeOnEscape);
     return () => {
@@ -55,7 +98,7 @@ export function Catalog({ products }: { products: Product[] }) {
     return <div className="grid">
       {items.map((product) => (
         <article className="card" key={product.id}>
-          <button className="image-wrap product-image-button" type="button" onClick={() => setSelectedProduct(product)} aria-label={`Ampliar foto de ${product.name}`}>
+          <button className="image-wrap product-image-button" type="button" onClick={() => openProduct(product)} aria-label={`Ampliar foto de ${product.name}`}>
             <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 640px) 50vw, 33vw" />
             <div className="badges">{product.is_new && <span>Nuevo</span>}{product.is_offer && <span>Oferta</span>}</div>
           </button>
@@ -115,13 +158,16 @@ export function Catalog({ products }: { products: Product[] }) {
       <section className="cta"><Image className="cta-background" src="/brand/cta-background.png" alt="" fill sizes="100vw"/><div className="shell cta-content"><span>¿Necesitás ayuda para elegir?</span><h2>Escribile a Liz</h2><p>Atención personalizada y rápida por WhatsApp.</p><a href={whatsappUrl()} target="_blank"><MessageCircle size={19}/> 0993 376 335</a></div></section>
       <footer className="shell"><div className="footer-brand"><Image className="liz-logo footer-logo" src="/brand/liz-store-logo.png" alt="Liz Store" width={318} height={184} /></div><div className="footer-romance"><span>Representación oficial de</span><Image src="/brand/romance-logo.avif" alt="Romance" width={88} height={35} /></div></footer>
       {selectedProduct && (
-        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={`Foto ampliada de ${selectedProduct.name}`} onClick={() => setSelectedProduct(null)}>
+        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={`Foto ampliada de ${selectedProduct.name}`} onClick={closeProduct}>
           <div className="lightbox-panel" onClick={(event) => event.stopPropagation()}>
-            <button className="lightbox-close" type="button" onClick={() => setSelectedProduct(null)} aria-label="Cerrar imagen"><X size={22} /></button>
+            <button className="lightbox-close" type="button" onClick={closeProduct} aria-label="Cerrar imagen"><X size={22} /></button>
             <div className="lightbox-image">
               <Image src={selectedProduct.image_url} alt={selectedProduct.name} fill sizes="95vw" priority />
             </div>
             <div className="lightbox-caption"><strong>{selectedProduct.name}</strong><span>{formatGuarani(selectedProduct.price)}</span></div>
+            <div className="lightbox-actions">
+              <button className="lightbox-share" type="button" onClick={() => shareProduct(selectedProduct)}><Share2 size={18} /> Compartir en mi estado</button>
+            </div>
           </div>
         </div>
       )}
