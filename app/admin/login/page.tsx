@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -37,5 +38,5 @@ export default function LoginPage() {
       setLoading(false);
     }
   }
-  return <main className="login-page"><form className="login-card" onSubmit={submit}><div className="brand admin-brand"><span className="brand-mark">L</span><span><strong>Liz Store</strong><small>Administración</small></span></div><h1>Hola, Liz</h1><p>Ingresá para administrar tus productos.</p><label>Correo electrónico<input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} required /></label><label>Contraseña<input name="password" type={showPassword ? "text" : "password"} autoComplete="current-password" autoCapitalize="none" autoCorrect="off" spellCheck={false} required /></label><label className="show-password"><input type="checkbox" checked={showPassword} onChange={(event) => setShowPassword(event.target.checked)} /> Mostrar contraseña</label>{error && <div className="form-error">{error}</div>}<button disabled={loading}>{loading ? "Ingresando…" : "Ingresar"}</button><a href="/">← Volver a la tienda</a></form></main>;
+  return <main className="login-page"><form className="login-card" onSubmit={submit}><div className="admin-brand"><Image className="admin-liz-logo" src="/brand/liz-store-logo.png" alt="Liz Store" width={150} height={84} priority/><small>Administración</small></div><h1>Hola, Liz</h1><p>Ingresá para administrar tus productos.</p><label>Correo electrónico<input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} required /></label><label>Contraseña<input name="password" type={showPassword ? "text" : "password"} autoComplete="current-password" autoCapitalize="none" autoCorrect="off" spellCheck={false} required /></label><label className="show-password"><input type="checkbox" checked={showPassword} onChange={(event) => setShowPassword(event.target.checked)} /> Mostrar contraseña</label>{error && <div className="form-error">{error}</div>}<button disabled={loading}>{loading ? "Ingresando…" : "Ingresar"}</button><a href="/">← Volver a la tienda</a></form></main>;
 }

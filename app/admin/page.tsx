@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { AdminDashboard } from "@/components/admin-dashboard";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -13,5 +14,5 @@ export default async function AdminPage() {
 }
 
 function SetupNotice() {
-  return <main className="admin-shell setup"><div className="brand admin-brand"><span className="brand-mark">L</span><span><strong>Liz Store</strong><small>Administración</small></span></div><div className="panel"><span className="eyebrow">Configuración inicial</span><h1>Conectá Supabase</h1><p>Agregá las dos variables indicadas en <code>.env.example</code>. Después, el acceso privado y los productos quedarán disponibles aquí.</p><a href="/">Volver a la tienda</a></div></main>;
+  return <main className="admin-shell setup"><div className="admin-brand"><Image className="admin-liz-logo" src="/brand/liz-store-logo.png" alt="Liz Store" width={150} height={84} priority/><small>Administración</small></div><div className="panel"><span className="eyebrow">Configuración inicial</span><h1>Conectá Supabase</h1><p>Agregá las dos variables indicadas en <code>.env.example</code>. Después, el acceso privado y los productos quedarán disponibles aquí.</p><a href="/">Volver a la tienda</a></div></main>;
 }

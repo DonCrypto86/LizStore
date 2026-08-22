@@ -106,9 +106,9 @@ footer { position:relative;z-index:2;min-height:130px;display:flex;align-items:c
 .lightbox-actions { padding:0 18px 17px; }
 .lightbox-share { width:100%;min-height:46px;display:flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:14px;background:#e9f8ef;color:#087b47;font:700 14px/1 Inter,Arial,sans-serif;cursor:pointer; }
 .lightbox-share:active { transform:translateY(1px); }
-.admin-shell { width:min(920px,calc(100% - 28px)); margin:auto; min-height:100vh; padding-bottom:80px; }
+.admin-shell { width:min(920px,calc(100% - 28px)); margin:auto; min-height:100vh; padding-bottom:28px; }
 .admin-header { height:90px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #e9e2ec; }
-.admin-brand { color:var(--purple); }.admin-brand .brand-mark { border-color:#7b499d66; }
+.admin-brand { display:flex;align-items:center;gap:9px;color:var(--purple); }.admin-liz-logo { width:126px;height:71px;object-fit:contain;object-position:center; }.admin-brand small { color:#8b7192;font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase; }
 .ghost,.add,.admin-actions button,.modal-head button { border:0; cursor:pointer; display:flex; align-items:center; gap:8px; }
 .ghost { background:transparent; color:#796f7e; }.admin-title { display:flex; justify-content:space-between; align-items:end; margin:55px 0 30px; }
 .admin-title h1,.setup h1,.login-card h1 { color:var(--deep); margin:8px 0; font:400 46px/1 Georgia,serif; }.admin-title p { margin:0;color:#877e8b; }
@@ -128,6 +128,7 @@ footer { position:relative;z-index:2;min-height:130px;display:flex;align-items:c
 .login-card .show-password { display:flex;align-items:center;gap:8px;margin:-4px 0 18px;font-weight:600;color:#716776; }.login-card .show-password input { width:16px;height:16px;padding:0;margin:0; }
 .setup { padding-top:70px; }.setup .panel { margin-top:70px;max-width:600px;background:var(--mist);padding:32px;border-radius:20px; }.setup .panel p { color:#6e6473;line-height:1.6; }.setup .panel a { color:var(--purple);font-weight:800; }
 .modal-backdrop { position:fixed;inset:0;background:#1e1026aa;display:grid;place-items:center;padding:15px;z-index:20; }.modal { width:min(700px,100%);max-height:calc(100vh - 30px);overflow:auto;background:white;border-radius:22px;padding:25px; }.modal-head { display:flex;justify-content:space-between;align-items:start;margin-bottom:22px; }.modal-head h2 { font-size:32px; }.upload { position:relative;border:1.5px dashed #b99ec8!important;border-radius:14px;padding:22px!important;place-items:center;background:#faf7fc;color:var(--purple)!important; }.upload input { position:absolute;inset:0;opacity:0;cursor:pointer; }.upload small { color:#8b7e91;font-weight:400; }.form-grid { display:grid;grid-template-columns:1fr 1fr;gap:0 14px; }.wide { grid-column:1/-1; }.checks { display:flex;gap:22px;margin:4px 0 22px; }.checks label { display:flex;align-items:center;gap:7px;margin:0; }.checks input { width:auto; }.save { width:100%;justify-content:center; }
+.admin-footer { display:flex;align-items:center;justify-content:center;gap:7px;margin-top:44px;padding:22px 0 4px;border-top:1px solid #eee8f0;color:#a49ba7;font-size:9px; }.admin-footer img { width:64px;height:auto;object-fit:contain;opacity:.7; }
 @media (max-width:700px) {
   .shell { width:min(100% - 24px, 1120px); }
   .hero { min-height:520px; }

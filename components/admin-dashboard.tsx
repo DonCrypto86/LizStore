@@ -84,11 +84,12 @@ export function AdminDashboard({ initialProducts, email }: { initialProducts: Pr
   }
 
   return <main className="admin-shell">
-    <header className="admin-header"><div className="brand admin-brand"><span className="brand-mark">L</span><span><strong>Liz Store</strong><small>Administración</small></span></div><button className="ghost" onClick={signOut}><LogOut size={17}/> Salir</button></header>
+    <header className="admin-header"><div className="admin-brand"><Image className="admin-liz-logo" src="/brand/liz-store-logo.png" alt="Liz Store" width={126} height={71} priority/><small>Administración</small></div><button className="ghost" onClick={signOut}><LogOut size={17}/> Salir</button></header>
     <div className="admin-title"><div><span className="eyebrow">{email}</span><h1>Mis productos</h1><p>{products.length} productos en total</p></div><div className="admin-title-actions"><input ref={bulkFileRef} className="bulk-upload-input" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={uploadPhotos}/><button className="import" onClick={() => bulkFileRef.current?.click()} disabled={uploading}><Upload size={19}/> {uploading ? `Subiendo ${uploadProgress}…` : "Subir varias fotos"}</button><button className="add" onClick={() => setEditing(null)}><Plus size={19}/> Agregar producto</button></div></div>
     <VisitorAnalytics />
     <div className="product-list">{products.map((p) => <article className="admin-product" key={p.id}><div className="thumb"><Image src={p.image_url} fill alt="" sizes="72px" /></div><div className="admin-product-info"><span className={`status ${p.status}`}>{p.status === "published" ? "Publicado" : "Oculto"}</span><h2>{p.name}</h2><p>{formatGuarani(p.price)} · {p.category}</p></div><div className="admin-actions"><button onClick={() => setEditing(p)} aria-label="Editar"><Pencil size={17}/></button><button onClick={() => toggle(p)} aria-label={p.status === "published" ? "Ocultar" : "Publicar"}>{p.status === "published" ? <EyeOff size={17}/> : <Eye size={17}/>}</button><button className="danger" onClick={() => remove(p)} aria-label="Eliminar"><Trash2 size={17}/></button></div></article>)}</div>
     {editing !== undefined && <ProductModal product={editing} busy={busy} setBusy={setBusy} close={() => setEditing(undefined)} saved={(product) => { setProducts(editing ? products.map(p => p.id === product.id ? product : p) : [product, ...products]); setEditing(undefined); }} />}
+    <footer className="admin-footer"><span>Desarrollado por</span><Image src="/brand/wendelo-logo.png" alt="Wendelo" width={76} height={25}/></footer>
   </main>;
 }
 
