@@ -1,20 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useRef, useState } from "react";
-import { Download, Eye, EyeOff, LogOut, Pencil, Plus, Trash2, Upload, X } from "lucide-react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { Eye, EyeOff, LogOut, Pencil, Plus, Trash2, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { formatGuarani } from "@/lib/format";
 import type { Product } from "@/lib/types";
-import { productImports } from "@/lib/product-import";
 
 export function AdminDashboard({ initialProducts, email }: { initialProducts: Product[]; email: string }) {
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
   const [editing, setEditing] = useState<Product | null | undefined>();
   const [busy, setBusy] = useState(false);
-  const [importing, setImporting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const bulkFileRef = useRef<HTMLInputElement>(null);
 
   async function toggle(product: Product) {
     const status = product.status === "published" ? "hidden" : "published";
@@ -28,23 +29,63 @@ export function AdminDashboard({ initialProducts, email }: { initialProducts: Pr
     if (!error) setProducts(products.filter((p) => p.id !== product.id));
   }
   async function signOut() { await createClient().auth.signOut(); router.push("/admin/login"); router.refresh(); }
-  async function importPhotos() {
-    if (!confirm("¿Importar los 24 productos como ocultos para editarlos después?")) return;
-    setImporting(true);
+  async function uploadPhotos(event: ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files ?? []);
+    if (!files.length) return;
+    if (!confirm(`¿Crear ${files.length} productos ocultos a partir de estas fotos?`)) {
+      event.target.value = "";
+      return;
+    }
+    setUploading(true);
+    setUploadProgress(0);
     const supabase = createClient();
-    const { data: existing } = await supabase.from("products").select("reference").in("reference", productImports.map((p) => p.reference));
-    const references = new Set((existing ?? []).map((p) => p.reference));
-    const pending = productImports.filter((p) => !references.has(p.reference));
-    if (!pending.length) { alert("Las 24 fotos ya fueron importadas."); setImporting(false); return; }
-    const { data, error } = await supabase.from("products").insert(pending).select();
-    if (error) alert(`No se pudieron importar: ${error.message}`);
-    else setProducts([...(data as Product[]), ...products]);
-    setImporting(false);
+    const created: Product[] = [];
+    const failed: string[] = [];
+
+    for (const [index, file] of files.entries()) {
+      try {
+        const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+        const storagePath = `bulk/${crypto.randomUUID()}.${ext}`;
+        const { error: uploadError } = await supabase.storage.from("product-images").upload(storagePath, file, { cacheControl: "31536000", upsert: false });
+        if (uploadError) throw uploadError;
+        const imageUrl = supabase.storage.from("product-images").getPublicUrl(storagePath).data.publicUrl;
+        const filename = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
+        const reference = `PEND-${Date.now().toString(36).toUpperCase()}-${String(index + 1).padStart(2, "0")}`;
+        const { data, error } = await supabase.from("products").insert({
+          name: filename || `Producto ${index + 1}`,
+          brand: "Romance",
+          reference,
+          price: 0,
+          category: "mujeres",
+          sizes: "",
+          color: "",
+          short_note: "",
+          image_url: imageUrl,
+          status: "hidden",
+          is_new: false,
+          is_offer: false
+        }).select().single();
+        if (error) {
+          await supabase.storage.from("product-images").remove([storagePath]);
+          throw error;
+        }
+        created.push(data as Product);
+      } catch (error) {
+        failed.push(`${file.name}: ${error instanceof Error ? error.message : "Error"}`);
+      }
+      setUploadProgress(index + 1);
+    }
+
+    if (created.length) setProducts((current) => [...created.reverse(), ...current]);
+    if (failed.length) alert(`${created.length} productos creados. ${failed.length} fotos no pudieron subirse.\n\n${failed.join("\n")}`);
+    else alert(`${created.length} productos fueron creados como ocultos. Ya podés editarlos.`);
+    event.target.value = "";
+    setUploading(false);
   }
 
   return <main className="admin-shell">
     <header className="admin-header"><div className="brand admin-brand"><span className="brand-mark">L</span><span><strong>Liz Store</strong><small>Administración</small></span></div><button className="ghost" onClick={signOut}><LogOut size={17}/> Salir</button></header>
-    <div className="admin-title"><div><span className="eyebrow">{email}</span><h1>Mis productos</h1><p>{products.length} productos en total</p></div><div className="admin-title-actions"><button className="import" onClick={importPhotos} disabled={importing}><Download size={19}/> {importing ? "Importando…" : "Importar 24 fotos"}</button><button className="add" onClick={() => setEditing(null)}><Plus size={19}/> Agregar producto</button></div></div>
+    <div className="admin-title"><div><span className="eyebrow">{email}</span><h1>Mis productos</h1><p>{products.length} productos en total</p></div><div className="admin-title-actions"><input ref={bulkFileRef} className="bulk-upload-input" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={uploadPhotos}/><button className="import" onClick={() => bulkFileRef.current?.click()} disabled={uploading}><Upload size={19}/> {uploading ? `Subiendo ${uploadProgress}…` : "Subir varias fotos"}</button><button className="add" onClick={() => setEditing(null)}><Plus size={19}/> Agregar producto</button></div></div>
     <div className="product-list">{products.map((p) => <article className="admin-product" key={p.id}><div className="thumb"><Image src={p.image_url} fill alt="" sizes="72px" /></div><div className="admin-product-info"><span className={`status ${p.status}`}>{p.status === "published" ? "Publicado" : "Oculto"}</span><h2>{p.name}</h2><p>{formatGuarani(p.price)} · {p.category}</p></div><div className="admin-actions"><button onClick={() => setEditing(p)} aria-label="Editar"><Pencil size={17}/></button><button onClick={() => toggle(p)} aria-label={p.status === "published" ? "Ocultar" : "Publicar"}>{p.status === "published" ? <EyeOff size={17}/> : <Eye size={17}/>}</button><button className="danger" onClick={() => remove(p)} aria-label="Eliminar"><Trash2 size={17}/></button></div></article>)}</div>
     {editing !== undefined && <ProductModal product={editing} busy={busy} setBusy={setBusy} close={() => setEditing(undefined)} saved={(product) => { setProducts(editing ? products.map(p => p.id === product.id ? product : p) : [product, ...products]); setEditing(undefined); }} />}
   </main>;

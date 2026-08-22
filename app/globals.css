@@ -99,6 +99,7 @@ footer { position:relative;z-index:2;min-height:130px;display:flex;align-items:c
 .ghost { background:transparent; color:#796f7e; }.admin-title { display:flex; justify-content:space-between; align-items:end; margin:55px 0 30px; }
 .admin-title h1,.setup h1,.login-card h1 { color:var(--deep); margin:8px 0; font:400 46px/1 Georgia,serif; }.admin-title p { margin:0;color:#877e8b; }
 .admin-title-actions { display:flex;gap:9px; }.add,.save,.import { border:0; background:var(--purple);color:white;padding:14px 18px;border-radius:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:7px; }.import { background:#f2edf3;color:#59475f; }.import:disabled { opacity:.65;cursor:wait; }
+.bulk-upload-input { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap; }
 .product-list { display:grid;gap:10px; }.admin-product { display:flex;align-items:center;gap:16px;padding:12px;border:1px solid #e9e3ec;border-radius:16px;background:#fff; }
 .thumb { width:72px;height:82px;position:relative;border-radius:10px;overflow:hidden;background:var(--mist);flex:none; }.thumb img { object-fit:cover; }
 .admin-product-info { min-width:0;flex:1; }.admin-product-info h2 { font:400 21px/1.1 Georgia,serif;margin:5px 0; }.admin-product-info p { margin:0;color:#79707e;font-size:12px;text-transform:capitalize; }
