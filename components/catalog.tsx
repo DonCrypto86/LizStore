@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, MessageCircle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, MessageCircle, X } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatGuarani, whatsappUrl } from "@/lib/format";
 
@@ -13,6 +13,7 @@ const filters = [
 export function Catalog({ products }: { products: Product[] }) {
   const [active, setActive] = useState("todos");
   const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const shown = useMemo(() => {
     const filtered = products.filter((p) => active === "todos" || p.category === active);
     if (priceSort === "none") return filtered;
@@ -22,6 +23,17 @@ export function Catalog({ products }: { products: Product[] }) {
   function togglePriceSort() {
     setPriceSort((current) => current === "asc" ? "desc" : "asc");
   }
+
+  useEffect(() => {
+    if (!selectedProduct) return;
+    const closeOnEscape = (event: KeyboardEvent) => event.key === "Escape" && setSelectedProduct(null);
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [selectedProduct]);
 
   return (
     <>
@@ -58,10 +70,10 @@ export function Catalog({ products }: { products: Product[] }) {
         <div className="grid">
           {shown.map((product) => (
             <article className="card" key={product.id}>
-              <div className="image-wrap">
+              <button className="image-wrap product-image-button" type="button" onClick={() => setSelectedProduct(product)} aria-label={`Ampliar foto de ${product.name}`}>
                 <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 640px) 50vw, 33vw" />
                 <div className="badges">{product.is_new && <span>Nuevo</span>}{product.is_offer && <span>Oferta</span>}</div>
-              </div>
+              </button>
               <div className="card-body">
                 <div className="meta">{product.brand} · Ref. {product.reference}</div>
                 <h3>{product.name}</h3>
@@ -75,6 +87,17 @@ export function Catalog({ products }: { products: Product[] }) {
       </main>
       <section className="cta"><div className="shell"><span>¿Necesitás ayuda para elegir?</span><h2>Escribile a Liz</h2><p>Atención personalizada y rápida por WhatsApp.</p><a href={whatsappUrl()} target="_blank"><MessageCircle size={19}/> 0993 376 335</a></div></section>
       <footer className="shell"><div className="footer-brand"><Image className="liz-logo footer-logo" src="/brand/liz-store-logo.png" alt="Liz Store" width={318} height={184} /></div><div className="footer-romance"><span>Representación oficial de</span><Image src="/brand/romance-logo.avif" alt="Romance" width={88} height={35} /></div></footer>
+      {selectedProduct && (
+        <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={`Foto ampliada de ${selectedProduct.name}`} onClick={() => setSelectedProduct(null)}>
+          <div className="lightbox-panel" onClick={(event) => event.stopPropagation()}>
+            <button className="lightbox-close" type="button" onClick={() => setSelectedProduct(null)} aria-label="Cerrar imagen"><X size={22} /></button>
+            <div className="lightbox-image">
+              <Image src={selectedProduct.image_url} alt={selectedProduct.name} fill sizes="95vw" priority />
+            </div>
+            <div className="lightbox-caption"><strong>{selectedProduct.name}</strong><span>{formatGuarani(selectedProduct.price)}</span></div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
