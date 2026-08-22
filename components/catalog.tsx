@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, MessageCircle } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { formatGuarani, whatsappUrl } from "@/lib/format";
 
@@ -12,7 +12,16 @@ const filters = [
 
 export function Catalog({ products }: { products: Product[] }) {
   const [active, setActive] = useState("todos");
-  const shown = useMemo(() => products.filter((p) => active === "todos" || p.category === active), [active, products]);
+  const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
+  const shown = useMemo(() => {
+    const filtered = products.filter((p) => active === "todos" || p.category === active);
+    if (priceSort === "none") return filtered;
+    return [...filtered].sort((a, b) => priceSort === "asc" ? a.price - b.price : b.price - a.price);
+  }, [active, priceSort, products]);
+
+  function togglePriceSort() {
+    setPriceSort((current) => current === "asc" ? "desc" : "asc");
+  }
 
   return (
     <>
@@ -26,7 +35,7 @@ export function Catalog({ products }: { products: Product[] }) {
         <div className="hero-content shell" id="inicio">
           <div className="official"><span>Representación oficial de</span><Image className="romance-logo" src="/brand/romance-logo.avif" alt="Romance" width={110} height={44} /></div>
           <h1>Tu estilo, <em>más cerca.</em></h1>
-          <p>Prendas elegidas para toda la familia. Mirá, elegí y consultá directamente con Liz por WhatsApp.</p>
+          <p><span>Prendas elegidas para toda la familia.</span><span>Mirá, elegí y consultá directamente con Liz por WhatsApp.</span></p>
           <a className="primary" href="#productos">Ver colección <ArrowRight size={18} /></a>
           <div className="hero-note"><span>Atención personal</span><span>•</span><span>Envíos en Paraguay</span></div>
         </div>
@@ -40,6 +49,8 @@ export function Catalog({ products }: { products: Product[] }) {
         </div>
         <div className="filters" role="group" aria-label="Filtrar productos">
           {filters.map(([value, label]) => <button key={value} className={active === value ? "active" : ""} onClick={() => setActive(value)}>{label}</button>)}
+          <span className="filter-divider" aria-hidden="true" />
+          <button className={`price-sort ${priceSort !== "none" ? "active" : ""}`} onClick={togglePriceSort} aria-label={priceSort === "asc" ? "Ordenar por precio de mayor a menor" : "Ordenar por precio de menor a mayor"}>Precio {priceSort === "asc" ? <ArrowUp size={14}/> : priceSort === "desc" ? <ArrowDown size={14}/> : <ArrowUpDown size={14}/>}</button>
         </div>
         <div className="grid">
           {shown.map((product) => (
