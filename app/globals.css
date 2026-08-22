@@ -89,7 +89,7 @@ h2 { margin:8px 0 0; font:400 clamp(34px,5vw,52px)/1 Georgia,serif; }
 .price { margin:auto 0 15px;padding-top:15px;font-weight:800;font-size:18px; }
 .whatsapp { display:flex; justify-content:center; align-items:center; gap:8px; padding:11px; border-radius:10px; background:#edf9f2; color:#117344; font-weight:800; font-size:13px; }
 .cta { position:relative;z-index:2;isolation:isolate;overflow:hidden;color:var(--ink);text-align:center;padding:76px 0;background:linear-gradient(135deg,#fbfaf7,#f4eff4); }
-.cta-background { z-index:-1;object-fit:cover;object-position:center 43%;opacity:.09;filter:grayscale(1); }
+.cta-background { z-index:-1;object-fit:cover;object-position:center 43%;opacity:.2;filter:grayscale(1) sepia(1) saturate(1.7) hue-rotate(235deg) brightness(1.08) contrast(.88);mix-blend-mode:multiply; }
 .cta-content { position:relative;z-index:1; }
 .cta span { color:#81579a; text-transform:uppercase; letter-spacing:.13em; font-size:11px; }
 .cta p { color:#736779; }
@@ -159,7 +159,7 @@ footer { position:relative;z-index:2;min-height:130px;display:flex;align-items:c
   .price { font-size:15px;margin:auto 0 12px;padding-top:12px; }
   .whatsapp { font-size:11px; padding:10px 5px; }
   .product-lightbox { padding:10px; }
-  .cta-background { object-position:47% center;opacity:.075; }
+  .cta-background { object-position:47% center;opacity:.18; }
   .lightbox-panel { border-radius:15px; }
   .lightbox-image { height:72vh; }
   .lightbox-caption { padding:13px 14px; }.lightbox-caption strong { font-size:18px; }
