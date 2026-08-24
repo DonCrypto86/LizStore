@@ -155,7 +155,12 @@ export function Catalog({ products }: { products: Product[] }) {
           <a className="brand brand-logo-link" href="#inicio" aria-label="Liz Store, inicio">
             <Image className="liz-logo" src="/brand/liz-store-logo.png" alt="Liz Store — Moda para toda la familia" width={398} height={230} priority />
           </a>
-          <a className="nav-contact" href={whatsappUrl()} target="_blank" rel="noreferrer" aria-label="Contactar por WhatsApp"><Image className="nav-whatsapp-icon" src="/brand/whatsapp.jpg" alt="" width={42} height={42} /></a>
+          <div className="nav-actions">
+            <a className="wendelo-credit header-credit" href="https://wendelo.online" target="_blank" rel="noreferrer" aria-label="Producto de WENDELO">
+              <Image src="/brand/wendelo-mark.png" alt="" width={20} height={18}/><span>Producto de<br/><strong>wendelo.online</strong></span>
+            </a>
+            <a className="nav-contact" href={whatsappUrl()} target="_blank" rel="noreferrer" aria-label="Contactar por WhatsApp"><Image className="nav-whatsapp-icon" src="/brand/whatsapp.jpg" alt="" width={42} height={42} /></a>
+          </div>
         </nav>
         <div className="hero-content shell" id="inicio">
           <div className="official"><span>Representación oficial de</span><Image className="romance-logo" src="/brand/romance-logo.avif" alt="Romance" width={110} height={44} /></div>
@@ -190,7 +195,7 @@ export function Catalog({ products }: { products: Product[] }) {
         </div> : renderProducts(shown)}
       </main>
       <section className="cta"><Image className="cta-background" src="/brand/cta-background.png" alt="" fill sizes="100vw"/><div className="shell cta-content"><span>¿Necesitás ayuda para elegir?</span><h2>Escribile a Liz</h2><p>Atención personalizada y rápida por WhatsApp.</p><a href={whatsappUrl()} target="_blank"><MessageCircle size={19}/> 0993 376 335</a></div></section>
-      <footer className="shell"><div className="footer-brand"><Image className="liz-logo footer-logo" src="/brand/liz-store-logo.png" alt="Liz Store" width={318} height={184} /></div><div className="footer-romance"><span>Representación oficial de</span><Image src="/brand/romance-logo.avif" alt="Romance" width={88} height={35} /></div></footer>
+      <footer className="shell"><div className="footer-brand"><Image className="liz-logo footer-logo" src="/brand/liz-store-logo.png" alt="Liz Store" width={318} height={184} /></div><a className="wendelo-credit footer-credit" href="https://wendelo.online" target="_blank" rel="noreferrer"><Image src="/brand/wendelo-mark.png" alt="WENDELO" width={22} height={20}/><span>Producto de<br/><strong>wendelo.online</strong></span></a><div className="footer-romance"><span>Representación oficial de</span><Image src="/brand/romance-logo.avif" alt="Romance" width={88} height={35} /></div></footer>
       {selectedProduct && (
         <div className="product-lightbox" role="dialog" aria-modal="true" aria-label={`Foto ampliada de ${selectedProduct.name}`} onClick={closeProduct}>
           <div className="lightbox-panel" onClick={(event) => event.stopPropagation()}>
