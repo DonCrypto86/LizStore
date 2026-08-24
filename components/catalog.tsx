@@ -6,6 +6,7 @@ import { ArrowDown, ArrowRight, ArrowUp, ArrowUpDown, MessageCircle, Share2, X }
 import type { Product } from "@/lib/types";
 import { formatGuarani, whatsappUrl } from "@/lib/format";
 import { createClient } from "@/lib/supabase/client";
+import { TENANT_SLUG } from "@/lib/tenant";
 import { WaveAnimation } from "@/components/wave-animation";
 
 const filters = [
@@ -106,7 +107,7 @@ export function Catalog({ products }: { products: Product[] }) {
       localStorage.setItem("liz-store-visitor-id", visitorId);
     }
 
-    createClient().from("page_visits").insert({ visitor_id: visitorId }).then(({ error }) => {
+    createClient().rpc("record_page_visit", { tenant_slug: TENANT_SLUG, new_visitor_id: visitorId }).then(({ error }) => {
       if (!error) localStorage.setItem("liz-store-last-visit", String(Date.now()));
     });
   }, []);

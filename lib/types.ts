@@ -2,6 +2,7 @@ export type Category = "mujeres" | "hombres" | "ninos";
 
 export type Product = {
   id: string;
+  tenant_id?: string;
   name: string;
   brand: string;
   reference: string;
