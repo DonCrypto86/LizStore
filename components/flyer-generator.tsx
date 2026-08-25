@@ -175,9 +175,27 @@ async function renderFlyer(products: Product[], catalogName: string, subtitle: s
   context.font = "400 24px Arial, sans-serif";
   context.fillText("Abrí el enlace y consultanos directamente", 540, 1870);
 
+  // Firma discreta de WENDELO en la esquina inferior derecha.
+  await drawBrandMark(context, "/brand/wendelo-mark.png", 1000, 1842, 48);
+
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.92));
   if (!blob) throw new Error("No se pudo guardar el flyer.");
   return new File([blob], `flyer-${Date.now()}.jpg`, { type: "image/jpeg" });
+}
+
+async function drawBrandMark(context: CanvasRenderingContext2D, url: string, x: number, y: number, size: number) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return;
+    const bitmap = await createImageBitmap(await response.blob());
+    context.save();
+    context.globalAlpha = 0.78;
+    context.drawImage(bitmap, x, y, size, size);
+    context.restore();
+    bitmap.close();
+  } catch {
+    // El flyer sigue siendo utilizable si el sello no se puede cargar.
+  }
 }
 
 async function drawProductImage(context: CanvasRenderingContext2D, url: string, x: number, y: number, width: number, height: number, radius: number, fallback: string) {
