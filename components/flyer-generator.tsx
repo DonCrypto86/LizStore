@@ -53,7 +53,7 @@ export function FlyerGenerator({ products, catalogName, catalogSubtitle, theme }
     const catalogUrl = window.location.origin;
     const shareData = {
       title: `${catalogName} · Catálogo`,
-      text: `Mirá nuestros productos y el catálogo completo:\n${catalogUrl}`,
+      text: "Mirá nuestros productos y el catálogo completo:",
       url: catalogUrl,
       files: [flyerFile]
     };
@@ -79,7 +79,7 @@ export function FlyerGenerator({ products, catalogName, catalogSubtitle, theme }
 
   return <>
     <button type="button" className="flyer-trigger" onClick={createFlyer} disabled={generating}>
-      <LayoutGrid size={19}/> {generating ? "Creando flyer…" : "Crear flyer"}
+      <LayoutGrid size={19}/> {generating ? "Creando flyer…" : "Crear flyer para Estado"}
     </button>
 
     {previewUrl && flyerFile && <div className="flyer-backdrop" role="dialog" aria-modal="true" aria-label="Vista previa del flyer">
